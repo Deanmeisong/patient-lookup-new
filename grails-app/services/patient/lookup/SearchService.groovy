@@ -18,7 +18,7 @@ class SearchService {
         if(ps.lastName && ps.firstName && ps.patientDbId) {
             for (LookupPerson lp : results) {
                 lp.decrypt(securityService)
-                if (lp.firstName.equals(ps.firstName) && lp.lastName.equals(ps.lastName) && lp.patientDbId.equals(ps.patientDbId)) {
+                if (lp.firstName.contains(ps.firstName) && lp.lastName.contains(ps.lastName) && lp.patientDbId.contains(ps.patientDbId)) {
                     logger.info("********************works!!!!")
                     resultsByLastNameAndFirstName.add(lp)
                 }
@@ -28,7 +28,7 @@ class SearchService {
                 List<LookupPerson> resultsByLastNameAndpatientDbId = new ArrayList<LookupPerson>()
                 for (LookupPerson lp : results) {
                     lp.decrypt(securityService)
-                    if (lp.lastName.equals(ps.lastName) && lp.patientDbId.equals(ps.patientDbId)) {
+                    if (lp.lastName.contains(ps.lastName) && lp.patientDbId.contains(ps.patientDbId)) {
                         resultsByLastNameAndpatientDbId.add(lp)
                     }
                 }
@@ -41,7 +41,7 @@ class SearchService {
                 List<LookupPerson> resultsByFirstNameAndpatientDbId = new ArrayList<LookupPerson>()
                 for (LookupPerson lp : results) {
                     lp.decrypt(securityService)
-                    if (lp.firstName.equals(ps.firstName) && lp.patientDbId.equals(ps.patientDbId)) {
+                    if (lp.firstName.contains(ps.firstName) && lp.patientDbId.contains(ps.patientDbId)) {
                         resultsByFirstNameAndpatientDbId.add(lp)
                     }
                 }
@@ -54,7 +54,7 @@ class SearchService {
                 List<LookupPerson> resultsByLastNameAndFirstName = new ArrayList<LookupPerson>()
                 for (LookupPerson lp : results) {
                     lp.decrypt(securityService)
-                    if (lp.firstName.equals(ps.firstName) && lp.lastName.equals(ps.lastName)) {
+                    if (lp.firstName.contains(ps.firstName) && lp.lastName.contains(ps.lastName)) {
                         resultsByLastNameAndFirstName.add(lp)
                     }
                 }
@@ -67,7 +67,7 @@ class SearchService {
                 List<LookupPerson> resultsByLastName = new ArrayList<LookupPerson>()
                 for (LookupPerson lp : results) {
                     lp.decrypt(securityService)
-                    if (lp.lastName.equals(ps.lastName)) {
+                    if (lp.lastName.contains(ps.lastName)) {
                         resultsByLastName.add(lp)
                     }
                 }
@@ -80,7 +80,7 @@ class SearchService {
                 List<LookupPerson> resultsByFirstName = new ArrayList<LookupPerson>()
                 for (LookupPerson lp : results) {
                     lp.decrypt(securityService)
-                    if (lp.firstName.equals(ps.firstName)) {
+                    if (lp.firstName.contains(ps.firstName)) {
                         resultsByFirstName.add(lp)
                     }
                 }
@@ -96,7 +96,7 @@ class SearchService {
                     logger.info("***********only patientDbId*********works!!!!")
                     logger.info("patientDbIdlp is: "+lp.patientDbId)
                     logger.info("patientDbIdps is: "+ps.patientDbId)
-                    if (lp.patientDbId.equals(ps.patientDbId)) {
+                    if (lp.patientDbId.contains(ps.patientDbId)) {
                         logger.info("patientDbIdlp is: "+lp.patientDbId)
                         logger.info("patientDbIdps is: "+ps.patientDbId)
 
