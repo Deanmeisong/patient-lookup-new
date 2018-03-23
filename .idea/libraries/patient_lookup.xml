@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="patient-lookup">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/grails-wrapper.jar!/" />
+      <root url="jar://$PROJECT_DIR$/._grails-wrapper.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

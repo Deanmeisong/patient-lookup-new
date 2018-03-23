@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.grails.plugins:audit-logging:2.0.6">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails.plugins/audit-logging/2.0.6/c050cb9fec609212fd7608b9d4f39bf197e445bc/audit-logging-2.0.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.grails.plugins/audit-logging/2.0.6/a881d75645ec55ba2b4c5794ef7972ed15f74430/audit-logging-2.0.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
