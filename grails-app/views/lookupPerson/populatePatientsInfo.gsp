@@ -1,7 +1,7 @@
 <html>
 <head>
     <meta name="layout" content="main">
-    <title>Populate genotyping results</title>
+    <title>Populate Lookup Persons</title>
 
     <script>
         $(function() {
@@ -40,7 +40,9 @@
     </ul>
 </div>
 <h1>Import Patient</h1>
-
+    <g:if test="${flash.message}">
+        <div class="message" role="status">${flash.message}</div>
+    </g:if>
 <g:form action="doPopulatePatientsInfo">
 
     <table>

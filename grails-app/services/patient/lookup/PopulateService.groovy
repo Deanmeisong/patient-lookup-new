@@ -1,6 +1,7 @@
 package patient.lookup
 
 import grails.gorm.transactions.Transactional
+import grails.validation.ValidationException
 import org.apache.log4j.Logger
 
 import java.text.DateFormat
@@ -15,12 +16,25 @@ class PopulateService {
     def serviceMethod() {
 
     }
+    def savePersons(List<LookupPerson> persons) {
 
+        for(LookupPerson lookupPerson : persons) {
+            try {
+                boolean isSave = lookupPersonService.save(lookupPerson)
+                if(isSave) {
+                    logger.info("-------------------------------------populate service the saved person is: " + lookupPerson.firstName)
+                }
+            } catch (ValidationException e) {
+                logger.info("PopulateService savePersons: " + e.getMessage())
+                flash.message = e.getMessage()
+            }
+        }
+
+    }
     @Transactional
-    public String importGenotypingResults(String data) throws ParseException {
+    public List<LookupPerson> importLookupPersons(String data) throws ParseException {
 
-        StringBuilder sbReport = new StringBuilder()
-
+        List<LookupPerson> lpList = new ArrayList<LookupPerson>()
         if (data) {
             final Date TODAYS_DATE = new Date()
 
@@ -37,9 +51,6 @@ class PopulateService {
                     int rowIndexDisplay = i+1
                     String[] columns = row.split("\\t", -1) // tab
                     if (columns.length >= 4 ) {    // We expect at least 3 columns
-                        String[] plateDetails = columns[1]?.trim()
-                        String assayName = columns[1]?.trim()
-                        String genotypingResult = columns[2]?.trim()
 
                         String firstName = columns[0]?.trim()
                         String lastName = columns[1]?.trim()
@@ -47,14 +58,6 @@ class PopulateService {
                         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                         Date dateOfBirth = df.parse(dateOfBirthString);
                         Long patientDbId = Long.parseLong(columns[3]?.trim());
-
-                        def lp = new LookupPerson()
-                        lp.firstName = firstName
-                        lp.lastName = lastName
-                        lp.dateOfBirth = dateOfBirth
-                        lp.patientDbId = patientDbId
-
-                        lookupPersonService.save(lp)
 
                         // Validate the assay name
                         if (!firstName) {
@@ -77,6 +80,15 @@ class PopulateService {
                             String msg = "patientDbId for row #" + rowIndexDisplay
                             throw new ParseException(msg, i)
                         }
+
+                        def lp = new LookupPerson()
+                        lp.firstName = firstName
+                        lp.lastName = lastName
+                        lp.dateOfBirth = dateOfBirth
+                        lp.patientDbId = patientDbId
+
+                        lpList.add(lp)
+
                     } else {
                         String msg = "Data must have at least 4 columns on row #"+rowIndexDisplay
                         throw new ParseException(msg, i)
@@ -84,10 +96,10 @@ class PopulateService {
 
                 }
             }
-            sbReport.append("\nCompleted")
 
         }
-        return sbReport.toString()
+
+        return lpList
 
     }
 

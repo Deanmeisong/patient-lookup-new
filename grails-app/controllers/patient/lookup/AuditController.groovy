@@ -38,37 +38,12 @@ class AuditController {
 
             def auditLoggingResults = []
 
-            //filter format{filter:[{className:value}, {className:value}, {className:value}]}
-            if(params.filter){
-                String filterValue = params.filter.toString()
-                logger.info("filterValue ->" +filterValue + "filterValueSize" +filterValue.size())
-                def fliterValueList = JSON.parse(filterValue)
-//				logger.info("fliterValueList ->" +fliterValueList + "fliterValueList" +fliterValueList?.size()+"filter size -> "+fliterValueList.filter?.size())
-
-                for(def entry : fliterValueList.filter){
-                    logger.info("value ->" + entry)
-
-                    Set keys = entry.keySet();
-                    Iterator a = keys.iterator();
-                    while(a.hasNext()) {
-                        String key = (String)a.next();
-                        // loop to get the dynamic key
-                        String value = (String)entry.get(key);
-                        logger.info("key ->" + key + ' ->value ->' +value)
-                        auditLoggingResults.addAll( AuditTrail.findAllByClassNameAndPersistedObjectId(key, value, [sort: "lastUpdated", order: "desc"]))
-
-                    }
-
-                }
-            }
-
-
             String previousController = params.previousController.toString()
-            String id= params.objectId.toString()
+            String objectId= params.objectId.toString()
             String className = params.className.toString().trim()
             logger.info("params.object.toString()->"+params.objectId.toString() +"className ->"+className)
 
-            auditLoggingResults.addAll( AuditTrail.findAllByClassName(className, id, [sort: "lastUpdated", order: "desc"]))
+            auditLoggingResults.addAll( AuditTrail.findAllByClassNameAndPersistedObjectId(className, objectId, [sort: "lastUpdated", order: "desc"]))
             def totalResults = auditLoggingResults.size()
 //            logger.info("className ->"+className)
             logger.info("totalResults ->"+totalResults)
@@ -76,7 +51,7 @@ class AuditController {
 
 
 
-            render(view : "list", model: [auditHistory: auditLoggingResults, showId: id, previousPageId:previousPageId, perviousController: previousController])
+            render(view : "list", model: [auditHistory: auditLoggingResults, showId: objectId, previousPageId:previousPageId, perviousController: previousController])
         }
         return
     }

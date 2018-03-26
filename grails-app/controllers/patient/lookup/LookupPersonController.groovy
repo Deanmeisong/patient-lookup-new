@@ -4,6 +4,8 @@ import grails.plugin.springsecurity.SpringSecurityService
 import grails.plugin.springsecurity.annotation.Secured
 import grails.validation.ValidationException
 import org.apache.log4j.Logger
+
+import java.text.ParseException
 import java.util.*
 import static org.springframework.http.HttpStatus.*
 
@@ -17,26 +19,41 @@ class LookupPersonController {
     SearchService searchService
     PopulateService populateService
     //static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    def populateInstruction() {
+
+    }
     def populatePatientsInfo() {
 
     }
     def doPopulatePatientsInfo() {
-        String importReport = populateService.importGenotypingResults(params.data)
-        redirect(action: "search")
+        List<LookupPerson> persons = new ArrayList<LookupPerson>()
+        try {
+            persons = populateService.importLookupPersons(params.data)
+        } catch(ParseException e1) {
+            logger.info("message exceptio is: "+ e1.getMessage())
+            flash.message = e1.getMessage()
+        }
+        if(persons.size()>0) {
+            for(LookupPerson lp: persons) {
+                logger.info("the person is: "+lp.firstName)
+            }
+            populateService.savePersons(persons)
+        }
+        render(view: "showSearch", model: [lookupPersonList: persons, lookupPersonCount: persons.size()])
     }
     def search() {}
+    def testAuditRead() {
+        def auditList = AuditTrail.findByEventName("Read")
+        for(AuditTrail at : auditList) {
 
+
+        }
+    }
     def showSearch() {
         def user = springSecurityService.currentUser
         logger.info("doing the search now...")
         logger.info("the user is: " + user)
         if(params) {
-            def auditTrailForRead = new AuditTrailForRead()
-            auditTrailForRead.dateRead = new Date()
-            auditTrailForRead.actor = user.username
-            auditTrailForRead.query = params
-            auditTrailForRead.save()
-            logger.info("auditTrailForRead.actor" + auditTrailForRead.actor)
             PatientSelectionCriteria ps = createPatientSelectionCriteria(params)
             List<LookupPerson> lookupPersonList = new ArrayList<LookupPerson>()
             if(ps) {
@@ -44,12 +61,23 @@ class LookupPersonController {
                 lookupPersonList = searchService.getLookupPersons(ps)
                 for (LookupPerson lp: lookupPersonList) {
                     lp.decrypt(securityService)
+                    def auditTrail = new AuditTrail()
+                    auditTrail.lastUpdated = new Date()
+                    auditTrail.actor = user.username
+                    auditTrail.className = lp.getClass().getSimpleName()
+                    auditTrail.eventName = "Read"
+                    auditTrail.persistedObjectId = lp.id.toString()
+                    boolean isSave = auditTrail.save()
+                    logger.info("persistedObjectId is: "+auditTrail.persistedObjectId)
+                    logger.info("eventName is: "+auditTrail.eventName)
+                    logger.info("className is: "+auditTrail.className)
+                    logger.info("isSave auditTrail: "+ isSave)
                     logger.info("firstName is: "+lp.firstName+" and lastName is: "+lp.lastName+"patientDbId is: "+lp.patientDbId)
                 }
             }
             render(view: "showSearch", model: [lookupPersonList: lookupPersonList, lookupPersonCount: lookupPersonList.size()])
         } else {
-            flash.message("pra")
+                flash.message("pra")
         }
 
     }
@@ -96,26 +124,29 @@ class LookupPersonController {
 
     }
     def save(LookupPerson lookupPerson) {
+        logger.info("this is the right controller!")
+        logger.info("this is the right controller2222!")
+
+        logger.info("lookupPersonService.isDuplicate(lookupPerson)1")
         if (lookupPerson == null) {
             notFound()
             return
         }
+        logger.info("lookupPersonService.isDuplicate(lookupPerson)2")
+        logger.info("lookupPersonService.isDuplicate(lookupPerson)"+lookupPersonService.isDuplicate(lookupPerson))
+        if(!lookupPersonService.isDuplicate(lookupPerson)) {
+            try {
+                lookupPersonService.save(lookupPerson)
+            } catch (ValidationException e) {
+                respond lookupPerson.errors, view:'create'
+                return
+            }
+            flash.message= "The lookupPerson ${lookupPerson.firstName} has been created."
 
-        try {
-            lookupPersonService.save(lookupPerson)
-        } catch (ValidationException e) {
-            respond lookupPerson.errors, view:'create'
-            return
+        }else {
+            flash.message = "The lookupPerson is already existent!!!!!!!"
         }
-        redirect(action: "search")
-
-//        request.withFormat {
-//            form multipartForm {
-//                flash.message = message(code: 'default.created.message', args: [message(code: 'lookupPerson.label', default: 'LookupPerson'), lookupPerson.id])
-//                redirect lookupPerson
-//            }
-//            '*' { respond lookupPerson, [status: CREATED] }
-//        }
+        redirect(action: "create")
     }
 
     def edit(Long id) {

@@ -47,8 +47,8 @@
           <element id="library" level="project" name="Gradle: ch.qos.logback:logback-classic:1.1.11" />
           <element id="library" level="project" name="Gradle: org.slf4j:jcl-over-slf4j:1.7.25" />
           <element id="library" level="project" name="Gradle: org.slf4j:jul-to-slf4j:1.7.25" />
-          <element id="library" level="project" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.25" />
           <element id="library" level="project" name="Gradle: org.glassfish.web:el-impl:2.1.2-b03" />
+          <element id="library" level="project" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.25" />
           <element id="library" level="project" name="Gradle: org.springframework.boot:spring-boot:1.5.8.RELEASE" />
           <element id="library" level="project" name="Gradle: org.apache.tomcat:tomcat-jdbc:8.5.23" />
           <element id="library" level="project" name="Gradle: org.codehaus.groovy:groovy:2.4.13" />
@@ -108,8 +108,8 @@
           <element id="library" level="project" name="Gradle: org.springframework:spring-expression:4.3.12.RELEASE" />
           <element id="library" level="project" name="Gradle: org.codehaus.groovy:groovy-xml:2.4.13" />
           <element id="library" level="project" name="Gradle: org.codehaus.groovy:groovy-templates:2.4.13" />
-          <element id="library" level="project" name="Gradle: javax.el:el-api:2.1.2-b03" />
           <element id="library" level="project" name="Gradle: org.yaml:snakeyaml:1.17" />
+          <element id="library" level="project" name="Gradle: javax.el:el-api:2.1.2-b03" />
           <element id="library" level="project" name="Gradle: org.apache.tomcat:tomcat-juli:8.5.23" />
           <element id="library" level="project" name="Gradle: javax.transaction:jta:1.1" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.8.10" />
