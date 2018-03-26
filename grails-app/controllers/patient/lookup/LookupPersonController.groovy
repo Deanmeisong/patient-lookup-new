@@ -190,6 +190,11 @@ class LookupPersonController {
             return
         }
 
+        int lookupPersonId = Integer.valueOf(params.lookupPersonId)
+        def lookupPerson = LookupPerson.findById(lookupPersonId)
+        lookupPerson.decrypt(securityService)
+        logger.info(lookupPerson.firstName + "has been deleted.")
+        flash.message = lookupPerson.firstName + "has been deleted."
         lookupPersonService.delete(params.lookupPersonId)
         redirect(action: "search")
     }
