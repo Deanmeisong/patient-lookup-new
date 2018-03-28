@@ -32,7 +32,8 @@
     <p>this is for test</p>
     <p>lookupPerson: ${lookupPerson}</p>
 
-    <g:form resource="${lookupPerson}" method="POST">
+    <g:form name="myForm" action="edit" id="${lookupPerson.id}">
+        <g:hiddenField name="patientSelectionCriteria" value="${patientSelectionCriteria}" />
         <fieldset class="form">
             <div>
                 First name: <g:textField name="firstName" value="${lookupPerson.firstName}"/>
@@ -55,7 +56,7 @@
 
         </fieldset>
         <fieldset class="buttons">
-            <g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" />
+            <g:submitButton name="create" class="create" value="${message(code: 'default.button.update.label', default: 'Update')}" />
         </fieldset>
     </g:form>
 

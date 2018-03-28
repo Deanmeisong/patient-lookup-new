@@ -7,6 +7,8 @@ import org.apache.log4j.Logger
 
 import java.text.ParseException
 import java.util.*
+
+import static java.lang.Math.*
 import static org.springframework.http.HttpStatus.*
 
 @Secured(value=["ROLE_ADMIN", "IS_AUTHENTICATED_FULLY"])
@@ -50,15 +52,23 @@ class LookupPersonController {
         }
     }
     def showSearch() {
+        int count
         def user = springSecurityService.currentUser
+        PatientSelectionCriteria ps
         logger.info("doing the search now...")
         logger.info("the user is: " + user)
         if(params) {
-            PatientSelectionCriteria ps = createPatientSelectionCriteria(params)
+            if(params.patientSelectionCriteria){
+                ps = params.patientSelectionCriteria
+            } else{
+                ps = createPatientSelectionCriteria(params)
+            }
             List<LookupPerson> lookupPersonList = new ArrayList<LookupPerson>()
             if(ps) {
                 logger.info("ps from controller is: "+ps)
                 lookupPersonList = searchService.getLookupPersons(ps)
+                count = lookupPersonList.size()
+
                 for (LookupPerson lp: lookupPersonList) {
                     lp.decrypt(securityService)
                     def auditTrail = new AuditTrail()
@@ -74,8 +84,14 @@ class LookupPersonController {
                     logger.info("isSave auditTrail: "+ isSave)
                     logger.info("firstName is: "+lp.firstName+" and lastName is: "+lp.lastName+"patientDbId is: "+lp.patientDbId)
                 }
+                if(params.offset&&params.max) {
+                    int offset = params.offset.toInteger()
+                    int limit = params.max.toInteger()
+
+                    lookupPersonList = lookupPersonList.subList(offset, Math.min(offset+limit, lookupPersonList.size()));
+                }
             }
-            render(view: "showSearch", model: [lookupPersonList: lookupPersonList, lookupPersonCount: lookupPersonList.size()])
+            render(view: "showSearch", model: [lookupPersonList: lookupPersonList, lookupPersonCount: count, patientSelectionCriteria: ps])
         } else {
                 flash.message("pra")
         }
@@ -103,8 +119,8 @@ class LookupPersonController {
     }
 
     def index(Integer max) {
-        params.max = Math.min(max ?: 10, 100)
-
+        params.max = min(max ?: 10, 100)
+        logger.info("params offset is: " + params.offset)
         def list = lookupPersonService.list(params)
         for (LookupPerson lp: list) {
             lp.decrypt(securityService)
@@ -149,16 +165,32 @@ class LookupPersonController {
         redirect(action: "create")
     }
 
-    def edit(Long id) {
-        respond lookupPersonService.get(id)
+    def edit() {
+        logger.info("the edited person id is: "+params.id)
+        logger.info("the firstName is: "+params.firstName)
+        logger.info("edit action patientSelectionCriteria: "+ params.patientSelectionCriteria)
+        def lp = lookupPersonService.get(params.id)
+        lp.firstName = params.firstName
+        lp.lastName = params.lastName
+        lp.dateOfBirth = params.dateOfBirth
+        lp.patientDbId = Long.valueOf(params.patientDbId)
+
+        try {
+            lookupPersonService.save(lp)
+        } catch (ValidationException e) {
+            respond lookupPerson.errors, view:'create'
+            return
+        }
+        redirect(action: "showSearch", params: [patientSelectionCriteria:params.patientSelectionCriteria])
     }
     def editLookupPerson() {
+        logger.info("editLookupPerson action patientSelectionCriteria: "+params.patientSelectionCriteria)
         logger.info("params.lookupPersonId"+params.lookupPersonId)
         int lookupPersonId = Integer.valueOf(params.lookupPersonId)
         def lookupPersonInstance = LookupPerson.get(lookupPersonId)
         lookupPersonInstance.decrypt(securityService)
 
-        render(view: "editLookupPerson", model: [lookupPerson: lookupPersonInstance])
+        render(view: "editLookupPerson", model: [lookupPerson: lookupPersonInstance, patientSelectionCriteria: params.patientSelectionCriteria])
 
     }
     def update(LookupPerson lookupPerson) {
