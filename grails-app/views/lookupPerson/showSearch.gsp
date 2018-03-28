@@ -31,8 +31,8 @@
         <g:each in="${lookupPersonList}" var="p" >
             <tr>
                 <td><f:display bean="${p}" property="firstName" />
-                <g:link controller="lookupPerson" action="editLookupPerson" params='[lookupPersonId:"${p.id}", patientSelectionCriteria:"${patientSelectionCriteria}"]'><asset:image src="edit-icon.png" width="18" height="18"/></g:link>
-                <g:link controller="lookupPerson" action="delete" params='[lookupPersonId:"${p.id}", patientSelectionCriteria:"${patientSelectionCriteria}"]' onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"><g:img dir="images" file="delete-ico.png" width="18" height="18" title="delete file" /></g:link>
+                <g:link controller="lookupPerson" action="editLookupPerson" params='[lookupPersonId:"${p.id}", firstName:"${firstName}", lastName:"${lastName}", patientDbId:"${patientDbId}"]'><asset:image src="edit-icon.png" width="18" height="18"/></g:link>
+                <g:link controller="lookupPerson" action="delete" params='[lookupPersonId:"${p.id}", firstName:"${firstName}", lastName:"${lastName}", patientDbId:"${patientDbId}"]' onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"><g:img dir="images" file="delete-ico.png" width="18" height="18" title="delete file" /></g:link>
                 </td>
                 <td><f:display bean="${p}" property="lastName" /></td>
                 <td><g:formatDate format="dd/MM/yyyy" date="${p.dateOfBirth}" /></td>

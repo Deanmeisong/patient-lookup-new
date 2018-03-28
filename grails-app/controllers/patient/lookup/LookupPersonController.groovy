@@ -57,6 +57,7 @@ class LookupPersonController {
         PatientSelectionCriteria ps
         logger.info("doing the search now...")
         logger.info("the user is: " + user)
+        logger.info("showSearch params: "+params)
         if(params) {
             if(params.patientSelectionCriteria){
                 ps = params.patientSelectionCriteria
@@ -66,8 +67,9 @@ class LookupPersonController {
             List<LookupPerson> lookupPersonList = new ArrayList<LookupPerson>()
             if(ps) {
                 logger.info("ps from controller is: "+ps)
+                logger.info("searchService.getLookupPersons(ps): "+searchService.getLookupPersons(ps))
                 lookupPersonList = searchService.getLookupPersons(ps)
-                count = lookupPersonList.size()
+                count = lookupPersonList.size()? 0:lookupPersonList.size()
 
                 for (LookupPerson lp: lookupPersonList) {
                     lp.decrypt(securityService)
@@ -91,7 +93,7 @@ class LookupPersonController {
                     lookupPersonList = lookupPersonList.subList(offset, Math.min(offset+limit, lookupPersonList.size()));
                 }
             }
-            render(view: "showSearch", model: [lookupPersonList: lookupPersonList, lookupPersonCount: count, patientSelectionCriteria: ps])
+            render(view: "showSearch", model: [lookupPersonList: lookupPersonList, lookupPersonCount: count, firstName: params.firstName, lastName: params.lastName, patientDbId: params.patientDbId])
         } else {
                 flash.message("pra")
         }
@@ -162,7 +164,7 @@ class LookupPersonController {
         }else {
             flash.message = "The lookupPerson is already existent!!!!!!!"
         }
-        redirect(action: "create")
+        redirect(action: "showSearch", params: [firstName: lookupPerson.firstName, lastName: lookupPerson.lastName, patientDbId: lookupPerson.patientDbId])
     }
 
     def edit() {
@@ -181,7 +183,7 @@ class LookupPersonController {
             respond lookupPerson.errors, view:'create'
             return
         }
-        redirect(action: "showSearch", params: [patientSelectionCriteria:params.patientSelectionCriteria])
+        redirect(action: "showSearch", params: [firstName: params.firstName, lastName: params.lastName, patientDbId: params.patientDbId])
     }
     def editLookupPerson() {
         logger.info("editLookupPerson action patientSelectionCriteria: "+params.patientSelectionCriteria)
@@ -228,7 +230,7 @@ class LookupPersonController {
         logger.info(lookupPerson.firstName + "has been deleted.")
         flash.message = lookupPerson.firstName + "has been deleted."
         lookupPersonService.delete(params.lookupPersonId)
-        redirect(action: "search")
+        redirect(action: "showSearch", params: [firstName: params.firstName, lastName: params.lastName, patientDbId: params.patientDbId])
     }
 
     protected void notFound() {

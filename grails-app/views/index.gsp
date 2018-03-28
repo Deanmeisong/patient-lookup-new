@@ -31,7 +31,7 @@
 
     <content tag="nav">
         <li><g:link controller="lookupPerson" action="search">Search</g:link></li>
-        <li><g:link controller="lookupPerson" action="populateInstruction">Populate</g:link></li>
+        <li><g:link controller="lookupPerson" action="populatePatientsInfo">Populate</g:link></li>
         <li><g:link controller="lookupPerson" action="create">Create</g:link></li>
     </content>
 

@@ -6,10 +6,10 @@
       <module fileurl="file://$PROJECT_DIR$/src/integration-test/integration-test.iml" filepath="$PROJECT_DIR$/src/integration-test/integration-test.iml" />
       <module fileurl="file://$PROJECT_DIR$/out/integrationTest/integrationTest.iml" filepath="$PROJECT_DIR$/out/integrationTest/integrationTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/grails-app/controllers/patient/patient.iml" filepath="$PROJECT_DIR$/grails-app/controllers/patient/patient.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup_integrationTest.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup_integrationTest.iml" group="patient-lookup" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup_main.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup_main.iml" group="patient-lookup" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup_test.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup_test.iml" group="patient-lookup" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup-new.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup-new.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup-new_integrationTest.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup-new_integrationTest.iml" group="patient-lookup-new" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup-new_main.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup-new_main.iml" group="patient-lookup-new" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/patient-lookup-new_test.iml" filepath="$PROJECT_DIR$/.idea/modules/patient-lookup-new_test.iml" group="patient-lookup-new" />
       <module fileurl="file://$PROJECT_DIR$/src/test/groovy/patient/patient1.iml" filepath="$PROJECT_DIR$/src/test/groovy/patient/patient1.iml" />
       <module fileurl="file://$PROJECT_DIR$/grails-app/services/patient/patient2.iml" filepath="$PROJECT_DIR$/grails-app/services/patient/patient2.iml" />
       <module fileurl="file://$PROJECT_DIR$/grails-app/init/patient/patient3.iml" filepath="$PROJECT_DIR$/grails-app/init/patient/patient3.iml" />

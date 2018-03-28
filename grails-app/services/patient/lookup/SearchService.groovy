@@ -16,13 +16,15 @@ class SearchService {
         results = LookupPerson.findAll()
         logger.info("PatientSelectionCriteria is: "+ps)
         if(ps.lastName && ps.firstName && ps.patientDbId) {
+            List<LookupPerson> resultsByFulltNameAndpatientDbId = new ArrayList<LookupPerson>()
             for (LookupPerson lp : results) {
                 lp.decrypt(securityService)
                 if (lp.firstName.contains(ps.firstName) && lp.lastName.contains(ps.lastName) && lp.patientDbId.equals(ps.patientDbId)) {
                     logger.info("********************works!!!!")
-                    resultsByLastNameAndFirstName.add(lp)
+                    resultsByFulltNameAndpatientDbId.add(lp)
                 }
             }
+            return resultsByFulltNameAndpatientDbId
         } else {
             if(ps.lastName && ps.patientDbId) {
                 List<LookupPerson> resultsByLastNameAndpatientDbId = new ArrayList<LookupPerson>()
