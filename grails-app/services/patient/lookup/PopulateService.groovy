@@ -3,6 +3,7 @@ package patient.lookup
 import grails.gorm.transactions.Transactional
 import grails.validation.ValidationException
 import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
 
 import java.text.DateFormat
 import java.text.ParseException
@@ -13,23 +14,41 @@ class PopulateService {
     Logger logger = Logger.getLogger(getClass())
     ILookupPersonService lookupPersonService
 
+    @Autowired
+    SecurityService securityService
+
     def serviceMethod() {
 
     }
-    def savePersons(List<LookupPerson> persons) {
-
+    List<LookupPerson> savePersons(List<LookupPerson> persons) {
+        List<LookupPerson> duplicatedLookupPersons = new ArrayList<LookupPerson>()
         for(LookupPerson lookupPerson : persons) {
-            try {
-                boolean isSave = lookupPersonService.save(lookupPerson)
-                if(isSave) {
-                    logger.info("-------------------------------------populate service the saved person is: " + lookupPerson.firstName)
+                if(!lookupPersonService.isDuplicate(lookupPerson)) {
+                    try {
+                        logger.info("adsadhsaudhisaudias")
+                        boolean isSave = lookupPersonService.save(lookupPerson)
+                    } catch (ValidationException e) {
+                        flash.message = e.getMessage()
+                        respond lookupPerson.errors, view:'create'
+                        return
+                    }
+                }else {
+                    logger.info("savePersons lookupPerson patientDbId: "+lookupPerson.patientDbId)
+                    def duplicatedPerson = lookupPersonService.isDuplicatedWithReturnPerson(lookupPerson)
+                    duplicatedPerson.decrypt(securityService)
+                    logger.info("lookupPerson.patientDbId: "+lookupPerson.patientDbId)
+                    logger.info("duplicatedPerson.patientDbId"+duplicatedPerson.patientDbId)
+                    if(!duplicatedPerson.patientDbId.equals(lookupPerson.patientDbId)) {
+                        logger.info("lookupPerson.patientDbId: "+lookupPerson.patientDbId)
+                        logger.info("duplicatedPerson.patientDbId"+duplicatedPerson.patientDbId)
+                        duplicatedPerson.patientDbId = lookupPerson.patientDbId
+                        boolean isSave = lookupPersonService.save(duplicatedPerson)
+                    } else {
+                        duplicatedLookupPersons.add(lookupPerson)
+                    }
                 }
-            } catch (ValidationException e) {
-                logger.info("PopulateService savePersons: " + e.getMessage())
-                flash.message = e.getMessage()
-            }
         }
-
+        return duplicatedLookupPersons
     }
     @Transactional
     public List<LookupPerson> importLookupPersons(String data) throws ParseException {

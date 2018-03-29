@@ -29,19 +29,33 @@ class LookupPersonController {
     }
     def doPopulatePatientsInfo() {
         List<LookupPerson> persons = new ArrayList<LookupPerson>()
+        String duplicatedPersons = "    "
         try {
             persons = populateService.importLookupPersons(params.data)
+            if(persons.size()>0) {
+                for(LookupPerson lp: persons) {
+                    logger.info("the person is: "+lp.firstName)
+                }
+                def duplicatedLookupPersons = populateService.savePersons(persons)
+
+                if(duplicatedLookupPersons.size()>0) {
+                    for(LookupPerson lp : duplicatedLookupPersons) {
+                        duplicatedPersons += lp.firstName+ "    "
+                    }
+                    flash.message = "these patients are already existent: " + duplicatedPersons
+                    render(view: "populatePatientsInfo")
+                } else {
+                    render(view: "showSearch", model: [lookupPersonList: persons, lookupPersonCount: persons.size()])
+
+                }
+            }
+
         } catch(ParseException e1) {
             logger.info("message exceptio is: "+ e1.getMessage())
             flash.message = e1.getMessage()
+            render(view: "populatePatientsInfo")
         }
-        if(persons.size()>0) {
-            for(LookupPerson lp: persons) {
-                logger.info("the person is: "+lp.firstName)
-            }
-            populateService.savePersons(persons)
-        }
-        render(view: "showSearch", model: [lookupPersonList: persons, lookupPersonCount: persons.size()])
+
     }
     def search() {}
     def testAuditRead() {
@@ -74,16 +88,21 @@ class LookupPersonController {
                 for (LookupPerson lp: lookupPersonList) {
                     lp.decrypt(securityService)
                     def auditTrail = new AuditTrail()
-                    auditTrail.lastUpdated = new Date()
-                    auditTrail.actor = user.username
-                    auditTrail.className = lp.getClass().getSimpleName()
-                    auditTrail.eventName = "Read"
-                    auditTrail.persistedObjectId = lp.id.toString()
-                    boolean isSave = auditTrail.save()
+                    AuditTrail.withTransaction {
+                        auditTrail.lastUpdated = new Date()
+                        auditTrail.actor = user.username
+                        auditTrail.className = lp.getClass().getSimpleName()
+                        auditTrail.eventName = "Read"
+                        auditTrail.persistedObjectId = lp.id.toString()
+                        boolean isSave = auditTrail.save()
+                        logger.info("isSave auditTrail: "+ isSave)
+
+                    }
+
                     logger.info("persistedObjectId is: "+auditTrail.persistedObjectId)
                     logger.info("eventName is: "+auditTrail.eventName)
                     logger.info("className is: "+auditTrail.className)
-                    logger.info("isSave auditTrail: "+ isSave)
+                    logger.info("auditTrail id: "+auditTrail.id)
                     logger.info("firstName is: "+lp.firstName+" and lastName is: "+lp.lastName+"patientDbId is: "+lp.patientDbId)
                 }
                 if(params.offset&&params.max) {
@@ -160,11 +179,12 @@ class LookupPersonController {
                 return
             }
             flash.message= "The lookupPerson ${lookupPerson.firstName} has been created."
+            redirect(action: "showSearch", params: [firstName: lookupPerson.firstName, lastName: lookupPerson.lastName, patientDbId: lookupPerson.patientDbId])
 
         }else {
             flash.message = "The lookupPerson is already existent!!!!!!!"
+            redirect(action: "create")
         }
-        redirect(action: "showSearch", params: [firstName: lookupPerson.firstName, lastName: lookupPerson.lastName, patientDbId: lookupPerson.patientDbId])
     }
 
     def edit() {

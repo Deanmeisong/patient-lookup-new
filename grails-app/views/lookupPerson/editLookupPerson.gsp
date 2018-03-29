@@ -36,12 +36,12 @@
         <g:hiddenField name="patientSelectionCriteria" value="${patientSelectionCriteria}" />
         <fieldset class="form">
             <div>
-                First name: <g:textField name="firstName" value="${lookupPerson.firstName}"/>
+                First name: <g:textField name="firstName" value="${lookupPerson.firstName}" required="true"/>
                 <g:hiddenField name="encryptedFirstName" value="${lookupPerson.encryptedFirstName}" />
             </div>
 
             <div>
-                Last name: <g:textField name="lastName" value="${lookupPerson.lastName}"/>
+                Last name: <g:textField name="lastName" value="${lookupPerson.lastName}" required="true"/>
                 <g:hiddenField name="encryptedLastName" value="${lookupPerson.encryptedLastName}" />
             </div>
 
@@ -50,7 +50,7 @@
             </div>
 
             <div>
-                Patient Database ID: <g:textField name="patientDbId" value="${lookupPerson.patientDbId}"/>
+                Patient Database ID: <g:textField name="patientDbId" value="${lookupPerson.patientDbId}" required="true"/>
                 <g:hiddenField name="encryptedPatientDbId" value="${lookupPerson.encryptedPatientDbId}" />
             </div>
 

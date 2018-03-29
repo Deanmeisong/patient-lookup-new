@@ -27,12 +27,12 @@
             <g:form resource="${this.lookupPerson}" method="POST">
                 <fieldset class="form">
                     <div>
-                        First name: <g:textField name="firstName" />
+                        First name: <g:textField name="firstName" required="true"/>
                         <g:hiddenField name="encryptedFirstName" value="none" />
                     </div>
 
                     <div>
-                        Last name: <g:textField name="lastName" />
+                        Last name: <g:textField name="lastName" required="true"/>
                         <g:hiddenField name="encryptedLastName" value="none" />
                     </div>
 
@@ -41,7 +41,7 @@
                     </div>
 
                     <div>
-                        Patient Database ID: <g:textField name="patientDbId" />
+                        Patient Database ID: <g:textField name="patientDbId" required="true"/>
                         <g:hiddenField name="encryptedPatientDbId" value="0" />
                     </div>
 
