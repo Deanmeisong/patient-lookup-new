@@ -18,6 +18,7 @@ info:
         name: '@info.app.name@'
         version: '@info.app.version@'
         grailsVersion: '@info.app.grailsVersion@'
+        date: '@info.app.build.date@'
 spring:
     main:
         banner-mode: "off"
@@ -119,10 +120,10 @@ environments:
             server:
                 port: 8080
                 contextPath: /patientLookup
-            neo4j:
-                url: bolt://localhost:7687/patient-lookup
-                username: neo4j
-                password: password
+#            neo4j:
+#                url: bolt://localhost:7687/patient-lookup
+#                username: neo4j
+#                password: password
         dataSources:
             dataSource:
                 driverClassName: "org.postgresql.Driver"
@@ -133,4 +134,18 @@ environments:
     test:
 
     production:
-
+        grails:
+            server:
+                port: 8080
+                contextPath: /patientLookup
+#            neo4j:
+#                url: bolt://localhost:7687/patient-lookup
+#                username: neo4j
+#                password: password
+        dataSources:
+            dataSource:
+                driverClassName: "org.postgresql.Driver"
+                dbCreate: "update"
+                url: "jdbc:postgresql://localhost:5432/patient_lookup"
+                username: "postgres"
+                password: "postgres"
